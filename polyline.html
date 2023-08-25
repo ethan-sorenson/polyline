@@ -1,56 +1,97 @@
-<head>
-    <title>Test</title>
-    <script type="text/javascript"
-        src="https://maps.google.com/maps/api/js?key=AIzaSyDS2Fl5xM3uMSqF_AEaPArlvdBn0xkbHFM&libraries=geometry&amp"></script>
-    <style type="text/css">
-        #map {
-            width: 480px;
-            height: 800px;
-        }
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Random Polyline Map Example</title>
+    <style>
+      #map {
+        width: 480px;
+        height: 800px;
+      }
     </style>
-    <script type='text/javascript'>
-        function initialize() {
-            var parameters = location.search.substring(1).split("&");
-            var temp = parameters[0].split("=");
-            let polyline = unescape(temp[1]);
-            var myLatlng = new google.maps.LatLng(55.682425, 12.557996);
-            var myOptions = {
-                zoom: 13,
-                center: myLatlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-            var map = new google.maps.Map(document.getElementById("map"), myOptions);
-            var decodedPath = google.maps.geometry.encoding.decodePath(polyline.replace(/\\\\/g, "\\"));
-            var decodedLevels = decodeLevels("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
-            var setRegion = new google.maps.Polyline({
-                path: decodedPath,
-                levels: decodedLevels,
-                strokeColor: "#FF0000",
-                strokeOpacity: 1.0,
-                strokeWeight: 2,
-                map: map
-            });
-            var bounds = new google.maps.LatLngBounds();
-            setRegion.getPath().forEach(function (e) {//can't do polyline.getPath()[i] because it's a MVCArray
-                bounds.extend(e);
-            })
-            map.fitBounds(bounds);
-        }
-        function decodeLevels(encodedLevelsString) {
-            var decodedLevels = [];
-
-            for (var i = 0; i < encodedLevelsString.length; ++i) {
-                var level = encodedLevelsString.charCodeAt(i) - 63;
-                decodedLevels.push(level);
-            }
-            return decodedLevels;
-        }
-
-
-    </script>
-</head>
-
-<body onload="initialize()">
+  </head>
+  <body>
     <div id="map"></div>
-</body>
+    <script>
+      // Get Coordinates
+      const queryString = location.search;
+      const urlParams = new URLSearchParams(queryString);
+      var startLongitude = urlParams.get("Longitude");
+      var startLatitude = urlParams.get("Latitude");
+      // Given coordinates
+      //const startLongitude = -97.46818222;
+      //const startLatitude = 35.25738891;
+
+      const numPoints = 10;
+      let points = [];
+
+      for (let i = 0; i < numPoints; i++) {
+        // Generate random offsets for longitude and latitude
+        const randomLongitudeOffset = Math.random() * 0.1 - 0.05; // Adjust the range as needed
+        const randomLatitudeOffset = Math.random() * 0.1 - 0.05;
+
+        // Calculate new coordinates
+        const newLongitude = startLongitude + randomLongitudeOffset;
+        const newLatitude = startLatitude + randomLatitudeOffset;
+
+        // Push to the points array
+        points.push({ lat: newLatitude, lng: newLongitude });
+      }
+
+      // Display the map and routes using Google Maps API
+      function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          center: new google.maps.LatLng(startLatitude, startLongitude),
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+        });
+
+        // Create a DirectionsService object
+        const directionsService = new google.maps.DirectionsService();
+
+        // Create a DirectionsRenderer object with custom route styling
+        const directionsRenderer = new google.maps.DirectionsRenderer({
+          map: map,
+          suppressMarkers: false,
+          polylineOptions: {
+            strokeColor: "#0f80c0", // Custom route color
+            strokeOpacity: 0.8,
+            strokeWeight: 5,
+          },
+        });
+
+        // Define the waypoints for the route
+        const waypoints = points.map((point) => ({
+          location: point,
+          stopover: true,
+        }));
+
+        // Set the origin, destination, and waypoints for the route request
+        const request = {
+          origin: new google.maps.LatLng(startLatitude, startLongitude),
+          destination: new google.maps.LatLng(
+            points[numPoints - 1].lat,
+            points[numPoints - 1].lng
+          ),
+          waypoints: waypoints.slice(1, numPoints - 1),
+          travelMode: google.maps.TravelMode.DRIVING,
+          optimizeWaypoints: true,
+        };
+
+        // Request the route from DirectionsService
+        directionsService.route(request, (response, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            // Display the route on the map
+            directionsRenderer.setDirections(response);
+          } else {
+            console.error("Error:", status);
+          }
+        });
+      }
+    </script>
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS2Fl5xM3uMSqF_AEaPArlvdBn0xkbHFM&libraries=geometry&callback=initMap"
+    ></script>
+  </body>
+</html>
