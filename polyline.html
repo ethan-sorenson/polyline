@@ -60,8 +60,8 @@
         });
 
         // Define the waypoints for the route
-        const waypoints = points.map((point) => ({
-          location: point,
+        const waypoints = points.slice(1, numPoints - 1).map((point) => ({
+          location: new google.maps.LatLng(point.lat, point.lng),
           stopover: true,
         }));
 
@@ -72,7 +72,7 @@
             points[numPoints - 1].lat,
             points[numPoints - 1].lng
           ),
-          waypoints: waypoints.slice(1, numPoints - 1),
+          waypoints: waypoints,
           travelMode: google.maps.TravelMode.DRIVING,
           optimizeWaypoints: true,
         };
