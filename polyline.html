@@ -17,6 +17,19 @@
       const urlParams = new URLSearchParams(queryString);
       var startLongitude = parseFloat(urlParams.get("Longitude"));
       var startLatitude = parseFloat(urlParams.get("Latitude"));
+      const apiKey = urlParams.get("apiKey"); // Make sure you use the correct parameter name
+
+      // Construct the script source with the API key
+      const scriptSrc = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry&callback=initMap`;
+
+      // Create the script element
+      const script = document.createElement("script");
+      script.async = true;
+      script.defer = true;
+      script.src = scriptSrc;
+      // Append the script element to the document
+      document.head.appendChild(script);
+
       // Given coordinates
       //const startLongitude = -97.46818222;
       //const startLatitude = 35.25738891;
@@ -88,10 +101,5 @@
         });
       }
     </script>
-    <script
-      async
-      defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDS2Fl5xM3uMSqF_AEaPArlvdBn0xkbHFM&libraries=geometry&callback=initMap"
-    ></script>
   </body>
 </html>
