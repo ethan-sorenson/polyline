@@ -15,8 +15,8 @@
       // Get Coordinates
       const queryString = location.search;
       const urlParams = new URLSearchParams(queryString);
-      var startLongitude = urlParams.get("Longitude");
-      var startLatitude = urlParams.get("Latitude");
+      var startLongitude = parseFloat(urlParams.get("Longitude"));
+      var startLatitude = parseFloat(urlParams.get("Latitude"));
       // Given coordinates
       //const startLongitude = -97.46818222;
       //const startLatitude = 35.25738891;
