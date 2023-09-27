@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script language="javascript">
+        // Get Coordinates
+        const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      var x = urlParams.get("VARAgids");
+      var y = urlParams.get("BNNVARA");
+      var z = urlParams.get("Donateur");
+
+        function hola() {
+            console.log(x);
+            if (x === "false") {
+                document.getElementById("cont1").style.visibility = "hidden";
+            }
+
+            if (y === "false") {
+                document.getElementById("cont2").style.visibility = "hidden";
+            }
+
+            if (z === "false") {
+                document.getElementById("cont3").style.visibility = "hidden";
+            }
+        }
+        
+
+        window.addEventListener('DOMContentLoaded', function () {
+            hola();
+        });
+    </script>
+</head>
+
+<style>
+    .container {
+    float: left;
+    width: 300px;
+    margin: 0 auto;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.box {
+    float: left;
+    width: 100px;
+    height: 26px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 1px;
+    font: ' + "'Assistant'" + ', sans-serif;
+    text-align:center;
+    font-weight: 500;
+    font-size: 20px;
+    color: black;
+}
+
+.box1 {
+    background-color: #FFC936;
+}
+
+.box2 {
+    background-color: #598CCB;
+}
+
+.box3 {
+    background-color: #03C383 ;
+}
+</style>
+<body>
+    <div class="container">
+        <div class="box box1" id="cont1">VARAgids</div>
+        <div class="box box2" id="cont2">BNNVARA</div>
+        <div class="box box3" id="cont3">Donateur</div>
+    </div>
+</body>
+</html>
